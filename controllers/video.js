@@ -49,6 +49,7 @@ const uploadFile = (filename, fileDirectoryPath) => {
     return new Promise(function (resolve, reject) {
         fs.readFile(fileDirectoryPath.toString(), function (err, data) {
             if (err) { reject(err); }
+
             const uploadToBucket = s3.putObject({
                 Bucket: process.env.BucketName,
                 Key: filename,
@@ -56,7 +57,14 @@ const uploadFile = (filename, fileDirectoryPath) => {
                 ACL: 'public-read',
                 ContentType: 'video/mp4'
             }, function (err, data) {
+
+                fs.unlink(fileDirectoryPath, (err) => {
+                    if (err) throw err;
+                    console.log(fileDirectoryPath + ' was uploaded to S3, and then deleted from Node server.');
+                });
+
                 if (err) reject(err);
+
                 resolve(uploadToBucket.params.Bucket+'.s3.amazonaws.com/'+uploadToBucket.params.Key);
             });
         });
