@@ -79,7 +79,7 @@ const uploadFile = (filename, fileDirectoryPath, mimetype) => {
 
                     if (err) reject(err);
 
-                    resolve(process.env.BucketName + process.env.BUCKET_URL + uploadToBucket.params.Key);
+                    resolve(process.env.BucketName + process.env.BUCKET_URL + '/' + uploadToBucket.params.Key);
                 }
             );
         });
