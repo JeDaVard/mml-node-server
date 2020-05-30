@@ -22,7 +22,9 @@ const getVideos = async (req, res) => {
 
 const postVideo = async (req, res) => {
   try {
-    const link = await uploadFile(req.file.originalname, req.file.path);
+    if (!req.file.mimetype.toLowerCase().startsWith('video')) return res.status(200);
+
+    const link = await uploadFile(req.file.originalname, req.file.path, req.file.mimetype);
 
     await Video.create({
       link:
@@ -45,7 +47,7 @@ const postVideo = async (req, res) => {
   }
 };
 
-const uploadFile = (filename, fileDirectoryPath) => {
+const uploadFile = (filename, fileDirectoryPath, mimetype) => {
   awsSDK.config.update({
     accessKeyId: process.env.AWSAccessKeyId,
     secretAccessKey: process.env.AWSSecretKey,
@@ -64,10 +66,10 @@ const uploadFile = (filename, fileDirectoryPath) => {
           Key: filename,
           Body: data,
           ACL: "public-read",
-          ContentType: "video/mp4",
+          ContentType: mimetype.toLowerCase(),
         },
         function (err, data) {
-          fs.unlink(fileDirectoryPath, (err) => {
+          fs.unlink(fileDirectoryPath,(err) => {
             if (err) throw err;
             console.log(
               fileDirectoryPath +
@@ -77,11 +79,7 @@ const uploadFile = (filename, fileDirectoryPath) => {
 
           if (err) reject(err);
 
-          resolve(
-            uploadToBucket.params.Bucket +
-              process.env.BUCKET_URL + "/" +
-              uploadToBucket.params.Key
-          );
+          resolve(process.env.BucketName + process.env.BUCKET_URL + uploadToBucket.params.Key);
         }
       );
     });
