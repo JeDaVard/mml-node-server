@@ -24,6 +24,11 @@ const storage = multer.diskStorage({
     }
 })
 
+// app.use((req, res, next) => {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     next()
+// })
+
 // Middleware
 app.use(express.urlencoded({extended: true}))
 app.use(express.json());
