@@ -40,6 +40,19 @@ app.use(multer({ storage: storage }).single('file'));
 app.use('/api/videos', videoAPI);
 
 
+// Receive information about thumb generation from AWS lambda
+app.post('/lambda',(req, res) => {
+    try {
+        const srcKey = req.body.srcKey
+        const duration = parseInt(req.body.duration, 10)
+        console.log(srcKey, duration, 'from lambda AWS')
+        res.status(200).send();
+    } catch (e) {
+        console.log(e)
+    }
+})
+
+
 mongoose
     .connect(process.env.MONGO_URI, {
         useNewUrlParser: true,

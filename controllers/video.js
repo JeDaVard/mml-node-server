@@ -63,7 +63,7 @@ const uploadFile = (filename, fileDirectoryPath, mimetype) => {
             const uploadToBucket = s3.putObject(
                 {
                     Bucket: process.env.BucketName,
-                    Key: filename,
+                    Key: 'videos/' + filename,
                     Body: data,
                     ACL: "public-read",
                     ContentType: mimetype.toLowerCase(),

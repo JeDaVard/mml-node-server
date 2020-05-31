@@ -5,6 +5,6 @@ const router = express.Router()
 
 router.route('/')
     .get(videoController.getVideos)
-    .post(videoController.postVideo)
+    .put(videoController.postVideo)
 
 module.exports = router;
